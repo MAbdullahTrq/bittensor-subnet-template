@@ -21,7 +21,7 @@ from typing import List
 import bittensor as bt
 
 
-def reward(query: int, response: int) -> float:
+def reward(score: float, response: int) -> float:
     """
     Reward the miner response to the dummy request. This method returns a reward
     value for the miner, which is used to update the miner's score.
@@ -29,13 +29,13 @@ def reward(query: int, response: int) -> float:
     Returns:
     - float: The reward value for the miner.
     """
-    bt.logging.info(f"In rewards, query val: {query}, response val: {response}, rewards val: {1.0 if response == query * 2 else 0}")
-    return 1.0 if response == query * 2 else 0
+    bt.logging.info(f"In rewards, score: {score}, response val: {response}, rewards val: {1.0 if response == score else 0}")
+    return 1.0 if response == score else 0
 
 
 def get_rewards(
     self,
-    query: int,
+    valid_score: float,
     responses: List[float],
 ) -> np.ndarray:
     """
@@ -49,10 +49,7 @@ def get_rewards(
     - np.ndarray: An array of rewards for the given query and responses.
     """
     # Get all the reward results by iteratively calling your reward() function.
-    # Cast response to int as the reward function expects an int type for response.
     
-    # Remove any None values
-    responses = [response for response in responses if response is not None]
     return np.array(
-        [reward(query, int(response)) for response in responses]
+        [reward(valid_score, response) for response in responses]
     )
